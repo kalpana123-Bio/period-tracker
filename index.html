@@ -91,7 +91,10 @@
     <div id="dashboard-screen" class="dashboard-screen hidden">
         <header>
             <div>
-                <div class="premium-header-text">Workspace Continuum</div>
+                <div class="premium-header-text" id="dashboard-title">
+                    <span style="color:#ffffff;font-weight:700;">Hello, </span>
+                    <span id="user-display-name" style="color:#e28da2;font-weight:700;"></span>
+                </div>
                 <div id="user-meta-info" class="user-meta">--</div>
             </div>
             <button id="download-pdf-btn" class="btn-pdf">Export PDF Report</button>
@@ -112,6 +115,9 @@
             userData.periodDuration = parseInt(document.getElementById('period-duration').value);
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('hidden');
+            document.getElementById('user-display-name').innerText = userData.name;
+            document.getElementById('user-meta-info').innerHTML =
+            `Age ${userData.age} • Cycle ${userData.cycleLength} Days • Period ${userData.periodDuration} Days`;
             generateThreeMonthContinuum();
         });
 
@@ -160,7 +166,7 @@
             sidebar.innerHTML = `
                 <div style="font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:600; margin-bottom:12px;">Cycle Breakdown</div>
                 <div class="detail-row period-highlight"><span>🩸 Estimated Period Start</span><span>${formatDateStr(matrix.periodStart)}</span></div>
-                <div class="detail-row"><span>Estimated Period End</span><span>${formatDateStr(matrix.periodEnd)}</span></div>
+                <div class="detail-row period-highlight"><span>🩸 Estimated Period End</span><span>${formatDateStr(matrix.periodEnd)}</span></div>
                 <div class="detail-row fertile-highlight"><span>🌸 Peak Fertility Window</span><span>${formatDateStr(fertileStart)} - ${formatDateStr(fertileEnd)}</span></div>
                 <div class="detail-row earlylate-highlight"><span>🟢 Early Cycle (-3 Days)</span><span>${formatDateStr(earlyStart)}</span></div>
                 <div class="detail-row earlylate-highlight"><span>🟠 Late Cycle (+3 Days)</span><span>${formatDateStr(lateStart)}</span></div>
