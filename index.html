@@ -25,12 +25,9 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-
         body { background: var(--bg-gradient); color: var(--text-light); padding: 30px 15px; display: flex; justify-content: center; min-height: 100vh; }
-
         .hidden { display: none !important; }
 
-        /* Existing Styles */
         .welcome-screen { width: 100%; max-width: 580px; margin: auto; background: #151226; padding: 45px 35px; border-radius: 24px; border: 1px solid var(--border-subtle); text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
         .welcome-title { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 600; color: #ffffff; margin-bottom: 30px; }
         .form-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -50,13 +47,12 @@
         
         .month-card-track { background: var(--card-dark); padding: 25px; border-radius: 20px; border: 1px solid var(--border-subtle); }
         .month-title-header { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 20px; }
-        
         .month-details-sidebar { background: rgba(27, 23, 48, 0.6); border: 1px dashed rgba(255, 255, 255, 0.08); padding: 25px; border-radius: 20px; display: flex; flex-direction: column; gap: 15px; }
         .detail-row { display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 0.9rem; }
         .detail-row span:first-child { color: var(--text-muted); }
         .detail-row span:last-child { font-weight: 600; color: #ffffff; }
 
-        /* STEP 1: Premium Right Panel Highlights */
+        /* Premium Right Panel Highlights */
         .detail-row.period-highlight { background: rgba(226,141,162,0.18); border-left:5px solid #e28da2; padding:12px; border-radius:10px; }
         .detail-row.fertile-highlight { background: rgba(94,80,220,0.20); border-left:5px solid #7b68ee; padding:12px; border-radius:10px; }
         .detail-row.earlylate-highlight { background: rgba(255,255,255,0.05); border-left:5px solid rgba(255,255,255,0.15); padding:12px; border-radius:10px; }
@@ -65,9 +61,13 @@
         .weekday-label { font-weight: 600; color: var(--text-muted); padding-bottom: 10px; font-size: 0.75rem; }
         .day-node-wrapper { position: relative; padding: 4px 0; }
         .day-node-element { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; width: 36px; margin: 0 auto; }
+        
+        /* New Calendar Highlight CSS */
         .day-node-wrapper.period-bleed-span .day-node-element { background: var(--bleed-gradient); color: #ffffff; font-weight: bold; }
-        .day-node-wrapper.ovulation-peak-anchor .day-node-element { background: var(--color-ovulation); color: #ffffff; font-weight: bold; }
-        .day-micro-dot { width: 4px; height: 4px; background-color: #ff4a74; border-radius: 50%; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); }
+        .day-node-wrapper.fertility-window .day-node-element{ background:rgba(123,104,238,0.35); color:#fff; font-weight:600; }
+        .day-node-wrapper.ovulation-peak-anchor .day-node-element{ background:#7b68ee; color:#fff; font-weight:bold; box-shadow:0 0 12px rgba(123,104,238,.7); }
+        .day-node-wrapper.early-cycle .day-node-element{ background:rgba(0,255,0,0.18); color:#fff; }
+        .day-node-wrapper.late-cycle .day-node-element{ background:rgba(255,165,0,0.18); color:#fff; }
     </style>
 </head>
 <body>
@@ -124,15 +124,16 @@
         function generateThreeMonthContinuum() {
             const targetContainer = document.getElementById('continuum-injection-target');
             targetContainer.innerHTML = '';
-            for (let m = 1; m <= 3; m++) {
+            for (let m = 0; m < 3; m++) {
                 let cycleStartAnchor = new Date(userData.lastPeriod);
                 cycleStartAnchor.setDate(userData.lastPeriod.getDate() + (userData.cycleLength * m));
                 let bleedEndAnchor = new Date(cycleStartAnchor);
                 bleedEndAnchor.setDate(cycleStartAnchor.getDate() + (userData.periodDuration - 1));
                 let ovulationPeakAnchor = new Date(cycleStartAnchor);
-                ovulationPeakAnchor.setDate(cycleStartAnchor.getDate() - 14);
+                ovulationPeakAnchor.setDate(cycleStartAnchor.getDate() + 14); // Usually day 14 of cycle
+                
                 renderSplitViewWorkspace(targetContainer, {
-                    sequenceIndex: m,
+                    sequenceIndex: m + 1,
                     periodStart: cycleStartAnchor,
                     periodEnd: bleedEndAnchor,
                     ovulationPeak: ovulationPeakAnchor,
@@ -151,95 +152,77 @@
             cardTrack.className = 'month-card-track';
             cardTrack.innerHTML = `<div class="month-title-header">${monthLabels[matrix.monthRepresentation]} ${matrix.yearRepresentation}</div>`;
             
-            // ... (Calendar rendering logic remains same) ...
             const gridCore = document.createElement("div");
             gridCore.className = "calendar-grid-core";
             
-            const weekdays = ["S","M","T","W","T","F","S"];
-            
-            weekdays.forEach(day=>{
+            ["S","M","T","W","T","F","S"].forEach(day=>{
                 const lbl=document.createElement("div");
                 lbl.className="weekday-label";
                 lbl.innerText=day;
                 gridCore.appendChild(lbl);
             });
             
-            const firstDay=new Date(
-                matrix.yearRepresentation,
-                matrix.monthRepresentation,
-                1
-            ).getDay();
+            const firstDay=new Date(matrix.yearRepresentation, matrix.monthRepresentation, 1).getDay();
+            const totalDays=new Date(matrix.yearRepresentation, matrix.monthRepresentation + 1, 0).getDate();
             
-            const totalDays=new Date(
-                matrix.yearRepresentation,
-                matrix.monthRepresentation+1,
-                0
-            ).getDate();
-            
-            for(let i=0;i<firstDay;i++){
+            // Logic for dates
+            const fertileStart = new Date(matrix.ovulationPeak);
+            fertileStart.setDate(fertileStart.getDate()-3);
+            const fertileEnd = new Date(matrix.ovulationPeak);
+            fertileEnd.setDate(fertileEnd.getDate()+3);
+            const earlyCycle = new Date(matrix.periodStart);
+            earlyCycle.setDate(earlyCycle.getDate()-3);
+            const lateCycle = new Date(matrix.periodStart);
+            lateCycle.setDate(lateCycle.getDate() + userData.cycleLength + 3);
+
+            for(let i=0; i<firstDay; i++) {
                 const blank=document.createElement("div");
                 blank.className="day-node-wrapper";
                 gridCore.appendChild(blank);
             }
             
-            for(let day=1;day<=totalDays;day++){
-            
+            for(let day=1; day<=totalDays; day++) {
                 const wrapper=document.createElement("div");
                 wrapper.className="day-node-wrapper";
-            
                 const cell=document.createElement("div");
                 cell.className="day-node-element";
                 cell.innerText=day;
-            
                 wrapper.appendChild(cell);
             
-                const currentDate=new Date(
-                    matrix.yearRepresentation,
-                    matrix.monthRepresentation,
-                    day
-                );
+                const currentDate=new Date(matrix.yearRepresentation, matrix.monthRepresentation, day);
             
-                if(currentDate>=matrix.periodStart &&
-                   currentDate<=matrix.periodEnd){
-            
+                if(currentDate >= matrix.periodStart && currentDate <= matrix.periodEnd){
                     wrapper.classList.add("period-bleed-span");
-            
-                }else{
-            
-                    const diff=Math.round(
-                    (currentDate-matrix.ovulationPeak)/(1000*60*60*24));
-            
-                    if(diff===0){
-            
-                        wrapper.classList.add("ovulation-peak-anchor");
-            
-                    }
-            
                 }
-            
+                else if(currentDate >= fertileStart && currentDate <= fertileEnd){
+                    wrapper.classList.add("fertility-window");
+                    if(currentDate.getTime() == matrix.ovulationPeak.getTime()){
+                        wrapper.classList.remove("fertility-window");
+                        wrapper.classList.add("ovulation-peak-anchor");
+                    }
+                }
+                else if(currentDate.toDateString() == earlyCycle.toDateString()){
+                    wrapper.classList.add("early-cycle");
+                }
+                else if(currentDate.toDateString() == lateCycle.toDateString()){
+                    wrapper.classList.add("late-cycle");
+                }
                 gridCore.appendChild(wrapper);
             }
             
             cardTrack.appendChild(gridCore);
             
-            // STEP 2: Calculate Early & Late dates
             const formatDateStr = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            const earlyStart = new Date(matrix.periodStart); earlyStart.setDate(earlyStart.getDate() - 3);
-            const lateStart = new Date(matrix.periodStart); lateStart.setDate(lateStart.getDate() + 3);
-            const fertileStart = new Date(matrix.ovulationPeak); fertileStart.setDate(fertileStart.getDate() - 3);
-            const fertileEnd = new Date(matrix.ovulationPeak); fertileEnd.setDate(fertileEnd.getDate() + 3);
-
-            // STEP 3: Replace the sidebar HTML
+            
             const sidebar = document.createElement('div');
             sidebar.className = 'month-details-sidebar';
             sidebar.innerHTML = `
                 <div style="font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:600; margin-bottom:12px;">Cycle Breakdown</div>
-                <div class="detail-row period-highlight"><span>🩸 Estimated Period Start</span><span>${formatDateStr(matrix.periodStart)}</span></div>
-                <div class="detail-row period-highlight"><span>🩸 Estimated Period End</span><span>${formatDateStr(matrix.periodEnd)}</span></div>
-                <div class="detail-row fertile-highlight"><span>🌸 Peak Fertility Window</span><span>${formatDateStr(fertileStart)} - ${formatDateStr(fertileEnd)}</span></div>
-                <div class="detail-row earlylate-highlight"><span>🟢 Early Cycle (-3 Days)</span><span>${formatDateStr(earlyStart)}</span></div>
-                <div class="detail-row earlylate-highlight"><span>🟠 Late Cycle (+3 Days)</span><span>${formatDateStr(lateStart)}</span></div>
-                <div class="detail-row"><span>Phase Context</span><span>${matrix.sequenceIndex==1 ? "Immediate Forecast" : matrix.sequenceIndex==2 ? "Extended Horizon" : "Quarter Horizon"}</span></div>
+                <div class="detail-row period-highlight"><span>🩸 Period Start</span><span>${formatDateStr(matrix.periodStart)}</span></div>
+                <div class="detail-row period-highlight"><span>🩸 Period End</span><span>${formatDateStr(matrix.periodEnd)}</span></div>
+                <div class="detail-row fertile-highlight"><span>🌸 Peak Fertility</span><span>${formatDateStr(fertileStart)} - ${formatDateStr(fertileEnd)}</span></div>
+                <div class="detail-row earlylate-highlight"><span>🟢 Early Cycle</span><span>${formatDateStr(earlyCycle)}</span></div>
+                <div class="detail-row earlylate-highlight"><span>🟠 Late Cycle</span><span>${formatDateStr(lateCycle)}</span></div>
             `;
             
             dualWorkspaceBlock.appendChild(cardTrack);
