@@ -24,21 +24,26 @@
             --text-muted: #8e8aa7;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        /* 1. Use the same font everywhere */
+        body, input, button, label, .detail-row, .month-title-header, .premium-header-text, .user-meta {
+            font-family: 'Playfair Display', serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg-gradient); color: var(--text-light); padding: 30px 15px; display: flex; justify-content: center; min-height: 100vh; }
         .hidden { display: none !important; }
 
         .welcome-screen { width: 100%; max-width: 580px; margin: auto; background: #151226; padding: 45px 35px; border-radius: 24px; border: 1px solid var(--border-subtle); text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
-        .welcome-title { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 600; color: #ffffff; margin-bottom: 30px; }
+        .welcome-title { font-size: 2.8rem; font-weight: 600; color: #ffffff; margin-bottom: 30px; }
         .form-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; text-align: left; }
-        label { margin-bottom: 8px; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-        input { width: 100%; padding: 14px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; font-size: 0.95rem; color: white; outline: none; }
+        label { margin-bottom: 8px; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        input { width: 100%; padding: 14px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; font-size: 1rem; color: white; outline: none; }
         button.btn-prime { background: linear-gradient(135deg, #e28da2 0%, #c45470 100%); color: white; border: none; padding: 16px; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; }
         
         .dashboard-screen { width: 100%; max-width: 1200px; margin: 0 auto; }
         header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 30px; }
-        .premium-header-text { font-family: 'Playfair Display', serif; font-size: 2.2rem; }
+        .premium-header-text { font-size: 2.2rem; }
         .btn-pdf { background: transparent; border: 1px solid var(--border-subtle); color: var(--color-period); padding: 10px 20px; border-radius: 8px; cursor: pointer; }
         
         .continuum-grid-container { display: flex; flex-direction: column; gap: 30px; }
@@ -46,24 +51,28 @@
         @media (min-width: 900px) { .month-dual-workspace { grid-template-columns: 1.4fr 1fr; } }
         
         .month-card-track { background: var(--card-dark); padding: 25px; border-radius: 20px; border: 1px solid var(--border-subtle); }
-        .month-title-header { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 20px; }
+        .month-title-header { font-size: 1.4rem; margin-bottom: 20px; }
         .month-details-sidebar { background: rgba(27, 23, 48, 0.6); border: 1px dashed rgba(255, 255, 255, 0.08); padding: 25px; border-radius: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .detail-row { display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 0.9rem; }
+        .detail-row { display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 1rem; }
         .detail-row span:first-child { color: var(--text-muted); }
         .detail-row span:last-child { font-weight: 600; color: #ffffff; }
 
-        /* Premium Right Panel Highlights */
         .detail-row.period-highlight { background: rgba(226,141,162,0.18); border-left:5px solid #e28da2; padding:12px; border-radius:10px; }
         .detail-row.fertile-highlight { background: rgba(94,80,220,0.20); border-left:5px solid #7b68ee; padding:12px; border-radius:10px; }
         .detail-row.earlylate-highlight { background: rgba(255,255,255,0.05); border-left:5px solid rgba(255,255,255,0.15); padding:12px; border-radius:10px; }
 
         .calendar-grid-core { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 12px; text-align: center; }
-        .weekday-label { font-weight: 600; color: var(--text-muted); padding-bottom: 10px; font-size: 0.75rem; }
+        .weekday-label { font-weight: 600; color: var(--text-muted); padding-bottom: 10px; font-size: 0.8rem; }
         .day-node-wrapper { position: relative; padding: 4px 0; }
         .day-node-element { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; width: 36px; margin: 0 auto; }
         
-        /* New Calendar Highlight CSS */
-        .day-node-wrapper.period-bleed-span .day-node-element { background: var(--bleed-gradient); color: #ffffff; font-weight: bold; }
+        /* 4. Make Period Start more visible */
+        .day-node-wrapper.period-bleed-span .day-node-element {
+            background: linear-gradient(135deg,#ff7ca5,#d64d78);
+            color:white;
+            font-weight:700;
+            box-shadow:0 0 10px rgba(255,105,150,.45);
+        }
         .day-node-wrapper.fertility-window .day-node-element{ background:rgba(123,104,238,0.35); color:#fff; font-weight:600; }
         .day-node-wrapper.ovulation-peak-anchor .day-node-element{ background:#7b68ee; color:#fff; font-weight:bold; box-shadow:0 0 12px rgba(123,104,238,.7); }
         .day-node-wrapper.early-cycle .day-node-element{ background:rgba(0,255,0,0.18); color:#fff; }
@@ -92,8 +101,8 @@
         <header>
             <div>
                 <div class="premium-header-text" id="dashboard-title">
-                    <span style="color:#ffffff;font-weight:700;">Hello, </span>
-                    <span id="user-display-name" style="color:#e28da2;font-weight:700;"></span>
+                    <span style="color:#ffffff;">Hello, </span>
+                    <span id="user-display-name" style="color:#e28da2;"></span>
                 </div>
                 <div id="user-meta-info" class="user-meta">--</div>
             </div>
@@ -124,16 +133,19 @@
         function generateThreeMonthContinuum() {
             const targetContainer = document.getElementById('continuum-injection-target');
             targetContainer.innerHTML = '';
-            for (let m = 0; m < 3; m++) {
+            // 2. Show NEXT 3 MONTHS correctly
+            for (let m = 1; m <= 3; m++) {
                 let cycleStartAnchor = new Date(userData.lastPeriod);
-                cycleStartAnchor.setDate(userData.lastPeriod.getDate() + (userData.cycleLength * m));
+                cycleStartAnchor.setDate(userData.lastPeriod.getDate() + (userData.cycleLength * (m - 1)));
                 let bleedEndAnchor = new Date(cycleStartAnchor);
                 bleedEndAnchor.setDate(cycleStartAnchor.getDate() + (userData.periodDuration - 1));
+                
+                // 3. Fix Ovulation (14 days before end of current cycle)
                 let ovulationPeakAnchor = new Date(cycleStartAnchor);
-                ovulationPeakAnchor.setDate(cycleStartAnchor.getDate() + 14); // Usually day 14 of cycle
+                ovulationPeakAnchor.setDate(cycleStartAnchor.getDate() + userData.cycleLength - 14);
                 
                 renderSplitViewWorkspace(targetContainer, {
-                    sequenceIndex: m + 1,
+                    sequenceIndex: m,
                     periodStart: cycleStartAnchor,
                     periodEnd: bleedEndAnchor,
                     ovulationPeak: ovulationPeakAnchor,
@@ -162,18 +174,19 @@
                 gridCore.appendChild(lbl);
             });
             
-            const firstDay=new Date(matrix.yearRepresentation, matrix.monthRepresentation, 1).getDay();
-            const totalDays=new Date(matrix.yearRepresentation, matrix.monthRepresentation + 1, 0).getDate();
+            const firstDay = new Date(matrix.yearRepresentation, matrix.monthRepresentation, 1).getDay();
+            const totalDays = new Date(matrix.yearRepresentation, matrix.monthRepresentation + 1, 0).getDate();
             
-            // Logic for dates
             const fertileStart = new Date(matrix.ovulationPeak);
             fertileStart.setDate(fertileStart.getDate()-3);
             const fertileEnd = new Date(matrix.ovulationPeak);
             fertileEnd.setDate(fertileEnd.getDate()+3);
+            
+            // 3. Fix Early/Late Cycle
             const earlyCycle = new Date(matrix.periodStart);
             earlyCycle.setDate(earlyCycle.getDate()-3);
             const lateCycle = new Date(matrix.periodStart);
-            lateCycle.setDate(lateCycle.getDate() + userData.cycleLength + 3);
+            lateCycle.setDate(lateCycle.getDate() + 3);
 
             for(let i=0; i<firstDay; i++) {
                 const blank=document.createElement("div");
@@ -196,7 +209,7 @@
                 }
                 else if(currentDate >= fertileStart && currentDate <= fertileEnd){
                     wrapper.classList.add("fertility-window");
-                    if(currentDate.getTime() == matrix.ovulationPeak.getTime()){
+                    if(currentDate.toDateString() == matrix.ovulationPeak.toDateString()){
                         wrapper.classList.remove("fertility-window");
                         wrapper.classList.add("ovulation-peak-anchor");
                     }
@@ -217,7 +230,7 @@
             const sidebar = document.createElement('div');
             sidebar.className = 'month-details-sidebar';
             sidebar.innerHTML = `
-                <div style="font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:600; margin-bottom:12px;">Cycle Breakdown</div>
+                <div style="font-size:1.25rem; font-weight:600; margin-bottom:12px;">Cycle Breakdown</div>
                 <div class="detail-row period-highlight"><span>🩸 Period Start</span><span>${formatDateStr(matrix.periodStart)}</span></div>
                 <div class="detail-row period-highlight"><span>🩸 Period End</span><span>${formatDateStr(matrix.periodEnd)}</span></div>
                 <div class="detail-row fertile-highlight"><span>🌸 Peak Fertility</span><span>${formatDateStr(fertileStart)} - ${formatDateStr(fertileEnd)}</span></div>
