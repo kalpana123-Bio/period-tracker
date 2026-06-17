@@ -152,6 +152,75 @@
             cardTrack.innerHTML = `<div class="month-title-header">${monthLabels[matrix.monthRepresentation]} ${matrix.yearRepresentation}</div>`;
             
             // ... (Calendar rendering logic remains same) ...
+            const gridCore = document.createElement("div");
+            gridCore.className = "calendar-grid-core";
+            
+            const weekdays = ["S","M","T","W","T","F","S"];
+            
+            weekdays.forEach(day=>{
+                const lbl=document.createElement("div");
+                lbl.className="weekday-label";
+                lbl.innerText=day;
+                gridCore.appendChild(lbl);
+            });
+            
+            const firstDay=new Date(
+                matrix.yearRepresentation,
+                matrix.monthRepresentation,
+                1
+            ).getDay();
+            
+            const totalDays=new Date(
+                matrix.yearRepresentation,
+                matrix.monthRepresentation+1,
+                0
+            ).getDate();
+            
+            for(let i=0;i<firstDay;i++){
+                const blank=document.createElement("div");
+                blank.className="day-node-wrapper";
+                gridCore.appendChild(blank);
+            }
+            
+            for(let day=1;day<=totalDays;day++){
+            
+                const wrapper=document.createElement("div");
+                wrapper.className="day-node-wrapper";
+            
+                const cell=document.createElement("div");
+                cell.className="day-node-element";
+                cell.innerText=day;
+            
+                wrapper.appendChild(cell);
+            
+                const currentDate=new Date(
+                    matrix.yearRepresentation,
+                    matrix.monthRepresentation,
+                    day
+                );
+            
+                if(currentDate>=matrix.periodStart &&
+                   currentDate<=matrix.periodEnd){
+            
+                    wrapper.classList.add("period-bleed-span");
+            
+                }else{
+            
+                    const diff=Math.round(
+                    (currentDate-matrix.ovulationPeak)/(1000*60*60*24));
+            
+                    if(diff===0){
+            
+                        wrapper.classList.add("ovulation-peak-anchor");
+            
+                    }
+            
+                }
+            
+                gridCore.appendChild(wrapper);
+            }
+            
+            cardTrack.appendChild(gridCore);
             
             // STEP 2: Calculate Early & Late dates
             const formatDateStr = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
