@@ -3,61 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlowTrack - Personal Cycle Dashboard</title>
-    <!-- Include html2pdf.js library for PDF generation -->
+    <title>Aura - Premium Cycle Atelier</title>
+    <!-- Premium Serif Font for Luxury Header Branding -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Include html2pdf.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
-            --primary-pink: #ff6b8b;
-            --ovulation-purple: #9b59b6;
-            --fertile-blue: #3498db;
-            --soft-pink: #ffebf0;
-            --dark-text: #2d3436;
-            --light-bg: #f9f9f9;
-            --card-bg: #ffffff;
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --bg-dark: #0d0e12;
+            --card-dark: #161820;
+            --border-gold: #312922;
+            --luxury-gold: #d4af37;
+            --rose-gold: #e5ad9f;
+            --ovulation-amethyst: #9b59b6;
+            --fertile-sapphire: #2980b9;
+            --variation-early: #e67e22;
+            --variation-late: #1abc9c;
+            --text-light: #f3f4f6;
+            --text-muted: #8a8f9c;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            padding: 20px;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 30px 20px;
         }
 
         .hidden {
             display: none !important;
         }
 
-        /* Screen Layouts */
+        /* Luxury Welcome Screen */
         .welcome-screen {
-            max-width: 500px;
-            margin: 60px auto;
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
+            max-width: 520px;
+            margin: 80px auto;
+            background: var(--card-dark);
+            padding: 50px 40px;
+            border-radius: 24px;
+            border: 1px solid var(--border-gold);
             text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
 
         .welcome-screen h1 {
-            color: var(--primary-pink);
-            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 30%, var(--rose-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
         }
 
         .welcome-screen p {
-            color: #7f8c8d;
-            margin-bottom: 30px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 35px;
         }
 
+        /* Dashboard View Layout */
         .dashboard-screen {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
@@ -65,135 +81,178 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0 30px 0;
+            padding: 20px 0 40px 0;
+            border-bottom: 1px solid var(--border-gold);
+            margin-bottom: 40px;
         }
 
-        header h1 {
-            color: var(--primary-pink);
+        /* Cool Luxury Font Typography for User Name */
+        .luxury-greeting {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-style: italic;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--rose-gold), var(--luxury-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 4px 20px rgba(229, 173, 159, 0.15);
+        }
+
+        .user-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 5px;
         }
 
         .grid-container {
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 25px;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 30px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 850px) {
             .grid-container {
                 grid-template-columns: 1fr;
             }
         }
 
         .card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
+            background: var(--card-dark);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-gold);
         }
 
-        .full-width {
-            grid-column: span 2;
+        h2.section-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
         }
 
-        @media (max-width: 768px) {
-            .full-width {
-                grid-column: span 1;
-            }
-        }
-
-        /* Form styling */
+        /* Interactive Inputs Form Elements */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
             text-align: left;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 9px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
             font-weight: 600;
-            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        input, select {
+        input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 14px;
+            background: #1d202b;
+            border: 1px solid #2d3142;
+            border-radius: 10px;
             font-size: 1rem;
+            color: white;
             outline: none;
+            transition: all 0.3s ease;
         }
 
-        input:focus, select:focus {
-            border-color: var(--primary-pink);
+        input:focus {
+            border-color: var(--rose-gold);
+            box-shadow: 0 0 10px rgba(229, 173, 159, 0.1);
         }
 
         button {
-            background-color: var(--primary-pink);
-            color: white;
+            background: linear-gradient(135deg, var(--rose-gold), #d48f7e);
+            color: #0d0e12;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 14px 28px;
+            border-radius: 10px;
             font-size: 1rem;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         button:hover {
-            background-color: #e05270;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(229, 173, 159, 0.25);
         }
 
-        .btn-secondary {
-            background-color: #7f8c8d;
+        .btn-pdf {
+            background: transparent;
+            border: 1px solid var(--border-gold);
+            color: var(--rose-gold);
         }
-        .btn-secondary:hover {
-            background-color: #646f70;
-        }
-
-        /* Insights & Variation Cards */
-        .insight-box {
-            background: var(--soft-pink);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--primary-pink);
+        .btn-pdf:hover {
+            background: rgba(229, 173, 159, 0.05);
+            border-color: var(--rose-gold);
+            box-shadow: none;
         }
 
-        .variation-container {
-            margin-top: 20px;
+        /* Metrics Data Tiles */
+        .luxury-metric-tile {
+            background: #1c1e27;
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border-left: 3px solid var(--rose-gold);
         }
 
-        .variation-box {
-            padding: 12px;
-            border-radius: 8px;
-            background: #f1f2f6;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-            border-left: 4px solid #ced6e0;
+        .luxury-metric-tile strong {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
         }
 
-        /* Calendar Grid System */
-        .calendar-header {
+        .luxury-metric-value {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .variation-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            font-weight: bold;
-            font-size: 1.2rem;
+            padding: 12px 15px;
+            background: #13151c;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            border-left: 3px solid #2d3142;
+        }
+
+        /* High-End Calendar Grid Matrix Elements */
+        .calendar-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--rose-gold);
+            margin-bottom: 25px;
+            text-align: left;
         }
 
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+            gap: 8px;
             text-align: center;
         }
 
         .weekday-label {
             font-weight: 600;
-            color: #7f8c8d;
-            padding: 5px 0;
-            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding-bottom: 10px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
         }
 
         .calendar-day {
@@ -202,53 +261,87 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-radius: 8px;
-            background: #f8f9fa;
-            font-size: 0.9rem;
+            border-radius: 10px;
+            background: #1a1c24;
+            font-size: 0.95rem;
             font-weight: 500;
+            color: #d1d5db;
             position: relative;
+            transition: border 0.2s ease;
         }
 
         .calendar-day.empty {
             background: transparent;
         }
 
-        /* Color Coding Key Indicators */
+        /* Mini indicators structural text overlay tags inside luxury matrix cells */
+        .day-tag {
+            position: absolute;
+            bottom: 4px;
+            font-size: 0.65rem;
+            font-weight: bold;
+            opacity: 0.85;
+        }
+
+        /* Calendar Aspect Color Status Markers Mapping Rules */
         .calendar-day.period {
-            background-color: var(--primary-pink) !important;
-            color: white;
+            background: linear-gradient(135deg, #e05270, var(--rose-gold)) !important;
+            color: #0d0e12 !important;
+            font-weight: bold;
         }
 
         .calendar-day.ovulation {
-            background-color: var(--ovulation-purple) !important;
-            color: white;
+            background: var(--ovulation-amethyst) !important;
+            color: white !important;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(155, 89, 182, 0.4);
         }
 
         .calendar-day.fertile {
-            background-color: #dff9fb;
-            border: 2px dashed var(--fertile-blue);
-            color: var(--dark-text);
+            border: 1px dashed var(--fertile-sapphire);
+            background: rgba(41, 128, 185, 0.1);
         }
+        .calendar-day.fertile .day-tag { color: var(--fertile-sapphire); }
 
-        /* Legend style */
-        .legend {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            font-size: 0.85rem;
-            flex-wrap: wrap;
+        .calendar-day.early-window {
+            border: 1px solid var(--variation-early);
+            background: rgba(230, 126, 34, 0.05);
+        }
+        .calendar-day.early-window .day-tag { color: var(--variation-early); }
+
+        .calendar-day.late-window {
+            border: 1px solid var(--variation-late);
+            background: rgba(26, 188, 156, 0.05);
+        }
+        .calendar-day.late-window .day-tag { color: var(--variation-late); }
+
+        /* Luxury Legend Tray */
+        .legend-tray {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 30px;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border-gold);
+            padding-top: 20px;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 10px;
+            color: var(--text-muted);
         }
 
-        .legend-color {
-            width: 15px;
-            height: 15px;
+        .legend-indicator {
+            width: 14px;
+            height: 14px;
             border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -256,95 +349,110 @@
 
     <!-- 1. WELCOME ONBOARDING SCREEN -->
     <div id="welcome-screen" class="welcome-screen">
-        <h1>Welcome to FlowTrack</h1>
-        <p>Set up your profile to generate your customized cycle calendar prediction.</p>
+        <h1>Aura</h1>
+        <p>Enter your baseline details to step into your personalized cyclical luxury tracker dashboard.</p>
         
         <form id="onboarding-form">
             <div class="form-group">
                 <label for="user-name">Your Name</label>
-                <input type="text" id="user-name" placeholder="e.g. Sarah" required>
+                <input type="text" id="user-name" placeholder="Sarah" required>
             </div>
             <div class="form-group">
                 <label for="user-age">Age</label>
-                <input type="number" id="user-age" min="10" max="100" placeholder="e.g. 26" required>
+                <input type="number" id="user-age" min="10" max="100" placeholder="26" required>
             </div>
             <div class="form-group">
-                <label for="last-period">When did your last period start?</label>
+                <label for="last-period">Last Period Cycle Onset</label>
                 <input type="date" id="last-period" required>
             </div>
             <div class="form-group">
-                <label for="cycle-days">Average Cycle Length (Days)</label>
+                <label for="cycle-days">Average Cycle Interval Length (Days)</label>
                 <input type="number" id="cycle-days" min="20" max="45" value="28" required>
             </div>
-            <button type="submit" style="width: 100%;">Generate My Dashboard</button>
+            <button type="submit" style="width: 100%;">Enter Dashboard</button>
         </form>
     </div>
 
-    <!-- 2. MAIN DASHBOARD SCREEN (Hidden on startup) -->
+    <!-- 2. MAIN DASHBOARD SCREEN -->
     <div id="dashboard-screen" class="dashboard-screen hidden">
         <header>
             <div>
-                <h1 id="greeting-title">Hello, User!</h1>
-                <p id="user-meta-info">Age: -- | Cycle Average: -- days</p>
+                <!-- Cool Premium Serif Typographic Header Instance -->
+                <div id="greeting-title" class="luxury-greeting">Sarah</div>
+                <div id="user-meta-info" class="user-meta">Age: -- — Cycle Parameter: -- Days</div>
             </div>
-            <button id="download-pdf-btn" class="btn-secondary">Download PDF Report</button>
+            <button id="download-pdf-btn" class="btn-pdf">Export Report (PDF)</button>
         </header>
 
-        <!-- Dynamic area targeted for PDF export conversion -->
+        <!-- Compilation Container Block Context Targeting PDF Exporter Canvas -->
         <div class="grid-container" id="pdf-content">
             
-            <!-- Target Summary Metrics -->
+            <!-- Predictions Left Sidebar Panel View Grid Node -->
             <div class="card">
-                <h2 style="margin-bottom:15px; color: var(--primary-pink);">Key Predictions</h2>
+                <h2 class="section-heading">Cycle Horizons</h2>
                 
-                <div class="insight-box">
-                    <strong>Next Predicted Period:</strong>
-                    <div id="predict-main" style="font-size: 1.2rem; font-weight: bold; margin-top: 5px;">Calculating...</div>
+                <div class="luxury-metric-tile">
+                    <strong>Predicted Cycle Commencement</strong>
+                    <div id="predict-main" class="luxury-metric-value">--</div>
                 </div>
 
-                <div class="insight-box" style="background-color: #f3f0f7; border-left-color: var(--ovulation-purple);">
-                    <strong style="color: var(--ovulation-purple);">Predicted Ovulation Day:</strong>
-                    <div id="predict-ovulation" style="font-size: 1.1rem; font-weight: bold; margin-top: 5px;">Calculating...</div>
+                <div class="luxury-metric-tile" style="border-left-color: var(--ovulation-amethyst);">
+                    <strong style="color: var(--ovulation-amethyst);">Expected Ovulation Apex</strong>
+                    <div id="predict-ovulation" class="luxury-metric-value">--</div>
                 </div>
 
-                <!-- Variations Window Area -->
-                <div class="variation-container">
-                    <h3 style="font-size: 1rem; margin-bottom: 10px;">Cycle Deviation Range (&plusmn;3 Day Variations)</h3>
-                    <div class="variation-box" id="predict-early">
-                        <strong>Early Window Prediction (-3 days):</strong> <span>--</span>
+                <!-- Structural Variations View Display Containers -->
+                <div style="margin-top: 30px;">
+                    <h3 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 12px;">
+                        Variance Modeling (&plusmn;3 Day Boundaries)
+                    </h3>
+                    
+                    <div class="variation-row" style="border-left-color: var(--variation-early);">
+                        <span>Early Cycle Shift (-3d)</span>
+                        <strong id="predict-early" style="color: var(--variation-early);">--</strong>
                     </div>
-                    <div class="variation-box" id="predict-standard">
-                        <strong>Standard Target Prediction (Exact Baseline):</strong> <span>--</span>
+
+                    <div class="variation-row" style="border-left-color: var(--luxury-gold);">
+                        <span>Calculated Target Baseline</span>
+                        <strong id="predict-standard" style="color: var(--luxury-gold);">--</strong>
                     </div>
-                    <div class="variation-box" id="predict-late">
-                        <strong>Late Window Prediction (+3 days):</strong> <span>--</span>
+
+                    <div class="variation-row" style="border-left-color: var(--variation-late);">
+                        <span>Late Cycle Shift (+3d)</span>
+                        <strong id="predict-late" style="color: var(--variation-late);">--</strong>
                     </div>
                 </div>
             </div>
 
-            <!-- Dynamic Visual Calendar Component -->
+            <!-- Visual Calendar Card Content Grid Element Block -->
             <div class="card">
-                <div class="calendar-header">
-                    <span id="calendar-month-year">Month Year</span>
-                </div>
+                <div class="calendar-header" id="calendar-month-year">Month Year</div>
                 
                 <div class="calendar-grid" id="calendar-grid-target">
-                    <!-- Headings Generated dynamically via JS script -->
+                    <!-- Dynamic matrix generation inside JavaScript handler loop engine -->
                 </div>
 
-                <!-- Legend Key mapping UI -->
-                <div class="legend">
+                <!-- Universal Integrated Aspect Legend Layout Panel Map -->
+                <div class="legend-tray">
                     <div class="legend-item">
-                        <div class="legend-color" style="background: var(--primary-pink);"></div>
-                        <span>Expected Period Days</span>
+                        <div class="legend-indicator" style="background: var(--rose-gold); color: #0d0e12;">P</div>
+                        <span>Predicted Period Window</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="background: var(--ovulation-purple);"></div>
+                        <div class="legend-indicator" style="background: var(--ovulation-amethyst); color: white;">O</div>
                         <span>Ovulation Peak Day</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="border: 2px dashed var(--fertile-blue); background: #dff9fb;"></div>
-                        <span>Fertile Window Frame</span>
+                        <div class="legend-indicator" style="border: 1px dashed var(--fertile-blue); background: rgba(41, 128, 185, 0.15); color: var(--fertile-sapphire);">F</div>
+                        <span>Fertile Window Span</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-indicator" style="border: 1px solid var(--variation-early); color: var(--variation-early);">E</div>
+                        <span>Early Variance Boundary</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-indicator" style="border: 1px solid var(--variation-late); color: var(--variation-late);">L</div>
+                        <span>Late Variance Boundary</span>
                     </div>
                 </div>
             </div>
@@ -353,70 +461,61 @@
     </div>
 
     <script>
-        // Global storage state mapping across parameters
         let userData = {};
 
         document.getElementById('onboarding-form').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Store form variables inputs
             userData.name = document.getElementById('user-name').value;
             userData.age = document.getElementById('user-age').value;
             userData.lastPeriod = new Date(document.getElementById('last-period').value);
             userData.cycleLength = parseInt(document.getElementById('cycle-days').value);
 
-            // Transition UI displays views 
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('hidden');
 
-            // Populate dashboard headings UI metrics
-            document.getElementById('greeting-title').innerText = `Welcome Back, ${userData.name}!`;
-            document.getElementById('user-meta-info').innerText = `Age: ${userData.age} | Base Configuration Cycle Array: ${userData.cycleLength} Days`;
+            // Apply typography name update injection
+            document.getElementById('greeting-title').innerText = userData.name;
+            document.getElementById('user-meta-info').innerText = `Age: ${userData.age}  |  Cycle Metric Baseline: ${userData.cycleLength} Days`;
 
-            // Trigger structural engine calculation matrices
             calculateCycleMetrics();
         });
 
         function calculateCycleMetrics() {
-            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
             const optionsShort = { month: 'short', day: 'numeric' };
 
-            // Baseline Standard Prediction logic points
+            // Set primary standard calculation date values mappings
             let standardPrediction = new Date(userData.lastPeriod);
             standardPrediction.setDate(userData.lastPeriod.getDate() + userData.cycleLength);
 
-            // Ovulation windows (occurring precisely 14 days before standard cycle restarts)
             let ovulationDay = new Date(standardPrediction);
             ovulationDay.setDate(standardPrediction.getDate() - 14);
 
-            // Variance deviation prediction calculations (+/- 3 days windows bounds)
             let earlyPrediction = new Date(standardPrediction);
             earlyPrediction.setDate(standardPrediction.getDate() - 3);
 
             let latePrediction = new Date(standardPrediction);
             latePrediction.setDate(standardPrediction.getDate() + 3);
 
-            // Populate UI layout metric text containers
+            // Populate dashboard target display strings text contents fields
             document.getElementById('predict-main').innerText = standardPrediction.toLocaleDateString('en-US', options);
             document.getElementById('predict-ovulation').innerText = ovulationDay.toLocaleDateString('en-US', options);
             
-            document.getElementById('predict-early').querySelector('span').innerText = earlyPrediction.toLocaleDateString('en-US', optionsShort);
-            document.getElementById('predict-standard').querySelector('span').innerText = standardPrediction.toLocaleDateString('en-US', optionsShort);
-            document.getElementById('predict-late').querySelector('span').innerText = latePrediction.toLocaleDateString('en-US', optionsShort);
+            document.getElementById('predict-early').innerText = earlyPrediction.toLocaleDateString('en-US', optionsShort);
+            document.getElementById('predict-standard').innerText = standardPrediction.toLocaleDateString('en-US', optionsShort);
+            document.getElementById('predict-late').innerText = latePrediction.toLocaleDateString('en-US', optionsShort);
 
-            // Initialize rendering sequence tracking matrix on calculated prediction target month context
-            renderCalendarLayout(standardPrediction, ovulationDay);
+            renderCalendarLayout(standardPrediction, ovulationDay, earlyPrediction, latePrediction);
         }
 
-        function renderCalendarLayout(targetPeriodDate, targetOvulationDate) {
+        function renderCalendarLayout(targetPeriodDate, targetOvulationDate, earlyDate, lateDate) {
             const grid = document.getElementById('calendar-grid-target');
-            grid.innerHTML = ''; // Clear tracking content arrays elements safely
+            grid.innerHTML = ''; 
 
-            // Set Month header visual string values
             const monthLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             document.getElementById('calendar-month-year').innerText = `${monthLabels[targetPeriodDate.getMonth()]} ${targetPeriodDate.getFullYear()}`;
 
-            // Append standard Calendar Weekday structures formatting elements
             const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             weekdays.forEach(day => {
                 const el = document.createElement('div');
@@ -425,49 +524,70 @@
                 grid.appendChild(el);
             });
 
-            // Get target boundaries parameters for constructing calendar array grid views
             const year = targetPeriodDate.getFullYear();
             const month = targetPeriodDate.getMonth();
             
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
 
-            // Render matching blank cell blocks structures maps alignment buffers
             for (let i = 0; i < firstDayIndex; i++) {
                 const emptyCell = document.createElement('div');
                 emptyCell.className = 'calendar-day empty';
                 grid.appendChild(emptyCell);
             }
 
-            // Loop and draw actual day grid nodes structures map checks variables matching elements
+            // Loop and plot status tracking nodes maps across cell containers grids models layers
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 const dayCell = document.createElement('div');
                 dayCell.className = 'calendar-day';
                 dayCell.innerText = day;
 
-                // Match specific date logic parameters variables comparisons
-                let currentIterationDate = new Date(year, month, day);
+                const currentIterationDate = new Date(year, month, day);
 
-                // 1. Period matching frame blocks check checks (predicting typical 4-day cycle length duration display block metrics)
+                // Initialize standard text elements mapping layer instances properties containers 
+                let tagSpan = document.createElement('span');
+                tagSpan.className = 'day-tag';
+
+                // 1. Period Range Matching Verification (Assuming average 4-day period timeline scale block)
                 let periodEndPredictionRange = new Date(targetPeriodDate);
-                periodEndPredictionRange.setDate(targetPeriodDate.getDate() + 4);
+                periodEndPredictionRange.setDate(targetPeriodDate.getDate() + 3);
 
                 if (currentIterationDate >= targetPeriodDate && currentIterationDate <= periodEndPredictionRange) {
                     dayCell.classList.add('period');
+                    tagSpan.innerText = 'P';
+                    dayCell.appendChild(tagSpan);
                 }
                 
-                // 2. Ovulation peak day absolute matches comparisons configurations
+                // 2. Ovulation Center Point Absolute Comparisons Evaluation Coordinates
                 else if (currentIterationDate.toDateString() === targetOvulationDate.toDateString()) {
                     dayCell.classList.add('ovulation');
+                    tagSpan.innerText = 'O';
+                    dayCell.appendChild(tagSpan);
                 }
 
-                // 3. Fertile Window constraints logic blocks mapping arrays bounds checking ranges
+                // 3. Early Shift Deviation Index Match Point Verification Check Context Bounds
+                else if (currentIterationDate.toDateString() === earlyDate.toDateString()) {
+                    dayCell.classList.add('early-window');
+                    tagSpan.innerText = 'E';
+                    dayCell.appendChild(tagSpan);
+                }
+
+                // 4. Late Shift Deviation Index Match Point Verification Check Context Bounds
+                else if (currentIterationDate.toDateString() === lateDate.toDateString()) {
+                    dayCell.classList.add('late-window');
+                    tagSpan.innerText = 'L';
+                    dayCell.appendChild(tagSpan);
+                }
+
+                // 5. Fertile Window Calculations Evaluation Ranges (5 Days lead window windowing buffers up to ovulation point target context elements)
                 else {
                     let fertileWindowStart = new Date(targetOvulationDate);
                     fertileWindowStart.setDate(targetOvulationDate.getDate() - 5);
                     
                     if (currentIterationDate >= fertileWindowStart && currentIterationDate <= targetOvulationDate) {
                         dayCell.classList.add('fertile');
+                        tagSpan.innerText = 'F';
+                        dayCell.appendChild(tagSpan);
                     }
                 }
 
@@ -475,20 +595,16 @@
             }
         }
 
-        // PDF Generation Event Controller Processing Engine Execution Linkage
+        // PDF Generation Event Binding Controller
         document.getElementById('download-pdf-btn').addEventListener('click', function() {
             const element = document.getElementById('pdf-content');
-            
-            // Adjust visual layout scaling options parameters metrics properties configuration targeting structures
             const pdfOptions = {
                 margin:       15,
-                filename:     `${userData.name || 'User'}_Cycle_Prediction_Report.pdf`,
+                filename:     `${userData.name || 'User'}_Aura_Cycle_Report.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { scale: 2, logging: false, useCORS: true, backgroundColor: '#0d0e12' },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
-
-            // Run standard compilation generation promises task pipeline tracking engine execution structures
             html2pdf().set(pdfOptions).from(element).save();
         });
     </script>
