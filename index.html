@@ -3,77 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Period Tracker</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
+    <title>Cycle Atelier</title>
     <style>
-        :root {
-            --bg-gradient: linear-gradient(180deg, #161426 0%, #0d0b1a 100%);
-            --card-dark: #1b1730;
-            --input-bg: #231e3d;
-            --border-subtle: rgba(255, 255, 255, 0.05);
-            --color-period: #e28da2;
-            --bleed-gradient: linear-gradient(135deg, #da7a92 0%, #c45470 100%);
-            --color-ovulation: #5c7aff; /* Brightened for highlight */
-            --color-text-highlight: #ffffff;
-            --text-light: #f1f5f9;
-            --text-muted: #8e8aa7;
-        }
-
-        /* Highlighting Classes */
-        .highlight-accent { background: var(--color-period); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
-        .highlight-fertility { background: var(--color-ovulation); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
-        .highlight-buffer { background: rgba(255, 255, 255, 0.1); color: var(--text-light); padding: 2px 6px; border-radius: 4px; }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-        body { background: var(--bg-gradient); color: var(--text-light); padding: 30px 15px; display: flex; justify-content: center; min-height: 100vh; }
-
+        /* Essential styles to prevent blank screen */
+        body { background: #0b0a15; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .welcome-screen { background: #151226; padding: 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
+        button { background: #e28da2; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; cursor: pointer; }
         .hidden { display: none !important; }
-
-        /* ... [Keep existing Welcome Screen and Dashboard CSS] ... */
-        .month-details-sidebar { background: rgba(27, 23, 48, 0.6); border: 1px dashed rgba(255, 255, 255, 0.08); padding: 25px; border-radius: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .detail-row { display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 0.9rem; }
-        
-        /* ... [Keep existing Calendar and Legend CSS] ... */
     </style>
 </head>
 <body>
 
+    <div id="welcome-screen" class="welcome-screen">
+        <h1>Welcome Ma'am</h1>
+        <form id="onboarding-form">
+            <input type="text" id="user-name" placeholder="Name" required>
+            <input type="date" id="last-period" required>
+            <input type="number" id="cycle-days" placeholder="Cycle Duration (e.g. 28)" required>
+            <input type="number" id="period-duration" placeholder="Bleed Duration (e.g. 5)" required>
+            <button type="submit">Launch Dashboard</button>
+        </form>
+    </div>
+
+    <div id="dashboard-screen" class="hidden" style="width: 90%; max-width: 800px; padding: 20px;">
+        <h1 id="greeting">Hello</h1>
+        <div id="target"></div>
+    </div>
+
     <script>
-        // ... [Keep existing event listener] ...
-
-        function renderSplitViewWorkspace(container, matrix) {
-            // ... [Keep existing calendar rendering code] ...
-
-            // RIGHT SIDE: Sidebar Metadata Detail Box
-            const sidebar = document.createElement('div');
-            sidebar.className = 'month-details-sidebar';
+        document.getElementById('onboarding-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('user-name').value;
+            const lastPeriod = new Date(document.getElementById('last-period').value);
+            const cycle = parseInt(document.getElementById('cycle-days').value);
             
-            const formatDateStr = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('dashboard-screen').classList.remove('hidden');
+            document.getElementById('greeting').innerText = `Hello, ${name}`;
             
-            // Calculate +/- 3 day buffers
-            let earlyDate = new Date(matrix.periodStart); earlyDate.setDate(earlyDate.getDate() - 3);
-            let lateDate = new Date(matrix.periodStart); lateDate.setDate(lateDate.getDate() + 3);
+            const target = document.getElementById('target');
+            for (let m = 1; m <= 3; m++) {
+                let start = new Date(lastPeriod); start.setDate(lastPeriod.getDate() + (cycle * m));
+                let peak = new Date(start); peak.setDate(start.getDate() - 14);
+                let early = new Date(start); early.setDate(start.getDate() - 3);
+                let late = new Date(start); late.setDate(start.getDate() + 3);
 
-            sidebar.innerHTML = `
-                <div style="font-family:'Playfair Display', serif; font-size:1.2rem; font-weight:600; margin-bottom:5px;">Cycle Breakdown</div>
-                <div class="detail-row"><span>Early Cycle (-3 days)</span><span class="highlight-buffer">${formatDateStr(earlyDate)}</span></div>
-                <div class="detail-row"><span>Estimated Period Start</span><span class="highlight-accent">${formatDateStr(matrix.periodStart)}</span></div>
-                <div class="detail-row"><span>Peak Fertility Window</span><span class="highlight-fertility">${formatDateStr(matrix.ovulationPeak)}</span></div>
-                <div class="detail-row"><span>Late Cycle (+3 days)</span><span class="highlight-buffer">${formatDateStr(lateDate)}</span></div>
-                <div class="detail-row"><span>Phase Context</span><span>${matrix.sequenceIndex === 1 ? 'Immediate Forecast' : matrix.sequenceIndex === 2 ? 'Extended Horizon' : 'Quarter Horizon'}</span></div>
-            `;
-            
-            dualWorkspaceBlock.appendChild(sidebar);
-            container.appendChild(dualWorkspaceBlock);
-        }
-        
-        // ... [Keep existing PDF export code] ...
+                target.innerHTML += `
+                    <div style="background:#1b1730; padding:20px; margin:10px 0; border-radius:10px;">
+                        <h3>${start.toLocaleDateString()}</h3>
+                        <p>Early (-3d): <b>${early.toLocaleDateString()}</b></p>
+                        <p style="color:#e28da2">Start: <b>${start.toLocaleDateString()}</b></p>
+                        <p style="color:#5c7aff">Peak Fertility: <b>${peak.toLocaleDateString()}</b></p>
+                        <p>Late (+3d): <b>${late.toLocaleDateString()}</b></p>
+                    </div>
+                `;
+            }
+        });
     </script>
 </body>
 </html>
