@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowTrack - Period Tracker</title>
+    <style>
+        :root {
+            --primary-pink: #ff6b8b;
+            --soft-pink: #ffebf0;
+            --dark-text: #2d3436;
+            --light-bg: #f9f9f9;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        header h1 {
+            color: var(--primary-pink);
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #7f8c8d;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+
+        h2 {
+            color: var(--dark-text);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            border-left: 4px solid var(--primary-pink);
+            padding-left: 10px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input[type="date"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        input[type="date"]:focus, select:focus {
+            border-color: var(--primary-pink);
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #e05270;
+        }
+
+        /* Prediction Tile */
+        .prediction-box {
+            background: var(--soft-pink);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .prediction-box h3 {
+            color: var(--primary-pink);
+            font-size: 2rem;
+            margin-top: 10px;
+        }
+
+        /* History Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: var(--soft-pink);
+            color: var(--primary-pink);
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #95a5a6;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>FlowTrack</h1>
+        <p>Your simple, private period & cycle companion</p>
+    </header>
+
+    <main class="container">
+        
+        <section class="card">
+            <h2>Next Cycle Prediction</h2>
+            <div class="prediction-box">
+                <p>Your next period is expected on:</p>
+                <h3 id="predicted-date">Log a cycle to calculate</h3>
+            </div>
+            <p style="text-align: center; color: #7f8c8d; font-size: 0.9rem;">
+                *Based on a standard 28-day cycle average.
+            </p>
+        </section>
+
+        <section class="card">
+            <h2>Log New Cycle</h2>
+            <form id="period-form">
+                <div class="form-group">
+                    <label for="start-date">Period Start Date</label>
+                    <input type="date" id="start-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="cycle-length">Average Cycle Length (Days)</label>
+                    <select id="cycle-length">
+                        <option value="28" selected>28 (Standard)</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                        <option value="32">32</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mood">Mood Today</label>
+                    <select id="mood">
+                        <option value="😊 Happy/Energetic">😊 Happy/Energetic</option>
+                        <option value="😐 Calm/Fine">😐 Calm/Fine</option>
+                        <option value="😢 Tired/Sensitive">😢 Tired/Sensitive</option>
+                        <option value="😡 Irritated/Crampy">😡 Irritated/Crampy</option>
+                    </select>
+                </div>
+                <button type="submit">Save Entry</button>
+            </form>
+        </section>
+
+        <section class="card full-width">
+            <h2>Past Cycles & Logs</h2>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Start Date</th>
+                            <th>Cycle Length</th>
+                            <th>Mood/Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <tr id="empty-row">
+                            <td colspan="3" class="empty-state">No logs added yet. Start tracking above!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.getElementById('period-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get inputs
+            const startDateVal = document.getElementById('start-date').value;
+            const cycleLengthVal = parseInt(document.getElementById('cycle-length').value);
+            const moodVal = document.getElementById('mood').value;
+
+            if (!startDateVal) return;
+
+            // 1. Calculate Prediction
+            const startDate = new Date(startDateVal);
+            const predictedDate = new Date(startDate);
+            predictedDate.setDate(startDate.getDate() + cycleLengthVal);
+
+            // Format date for display (e.g., "Oct 24, 2026")
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            document.getElementById('predicted-date').innerText = predictedDate.toLocaleDateString('en-US', options);
+
+            // 2. Add to History Table
+            const tbody = document.getElementById('history-table-body');
+            const emptyRow = document.getElementById('empty-row');
+            if (emptyRow) {
+                emptyRow.remove(); // Remove the "No logs" placeholder
+            }
+
+            const formattedStart = startDate.toLocaleDateString('en-US', options);
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${formattedStart}</strong></td>
+                <td>${cycleLengthVal} days</td>
+                <td>${moodVal}</td>
+            `;
+
+            // Prepend so latest log is always on top
+            tbody.insertBefore(row, tbody.firstChild);
+
+            // Reset form input
+            document.getElementById('start-date').value = '';
+        });
+    </script>
+</body>
+</html>
