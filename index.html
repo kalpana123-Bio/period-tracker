@@ -11,7 +11,6 @@
     <style>
         :root {
             /* Theme matching image_872423.png */
-            --bg-dark: #0f0c29;
             --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             --card-dark: rgba(40, 35, 70, 0.7);
             --color-period: #ff8fa3;
@@ -70,7 +69,7 @@
             <input type="date" id="last-period" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:none;" required>
             <input type="number" id="cycle-days" placeholder="Average Cycle Duration (Days)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:none;" required>
             <input type="number" id="period-duration" placeholder="Period Bleeding Duration (Days)" style="width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:none;" required>
-            <button type="submit" style="width:100%; padding:12px; border-radius:8px; border:none; background:var(--color-period); cursor:pointer;">Launch Dashboard</button>
+            <button type="submit" style="width:100%; padding:12px; border-radius:8px; border:none; background:var(--color-period); cursor:pointer; font-weight:bold;">Launch Dashboard</button>
         </form>
     </div>
 
@@ -82,18 +81,18 @@
     </div>
 
     <script>
+        let userData = {};
         document.getElementById('onboarding-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('user-name').value;
             userData = {
-                name: name,
+                name: document.getElementById('user-name').value,
                 lastPeriod: new Date(document.getElementById('last-period').value),
                 cycleLength: parseInt(document.getElementById('cycle-days').value),
                 periodDuration: parseInt(document.getElementById('period-duration').value)
             };
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('hidden');
-            document.getElementById('greeting-title').innerText = `Hello, ${name}`;
+            document.getElementById('greeting-title').innerText = `Hello, ${userData.name}`;
             generateContinuum();
         });
 
@@ -109,17 +108,16 @@
                 block.innerHTML = `
                     <div class="month-card-track">
                         <div style="margin-bottom:15px; font-weight:700;">${start.toLocaleString('default', { month: 'long' })}</div>
-                        <div class="calendar-grid-core" id="cal-${m}"></div>
+                        <div class="calendar-grid-core"></div>
                     </div>
                     <div class="month-details-sidebar">
-                        <div class="detail-row"><span>Start</span><span class="highlight-period">${start.toLocaleDateString()}</span></div>
-                        <div class="detail-row"><span>Peak Fertility</span><span class="highlight-peak">${peak.toLocaleDateString()}</span></div>
-                        <div class="detail-row"><span>Early (-3d)</span><span class="highlight-early">${new Date(start.getTime() - 259200000).toLocaleDateString()}</span></div>
-                        <div class="detail-row"><span>Late (+3d)</span><span class="highlight-late">${new Date(end.getTime() + 259200000).toLocaleDateString()}</span></div>
+                        <div class="detail-row"><span>Early Buffer (-3d)</span><span class="highlight-early">${new Date(start.getTime() - 259200000).toLocaleDateString()}</span></div>
+                        <div class="detail-row"><span>Estimated Period Start</span><span class="highlight-period">${start.toLocaleDateString()}</span></div>
+                        <div class="detail-row"><span>Peak Fertility Window</span><span class="highlight-peak">${peak.toLocaleDateString()}</span></div>
+                        <div class="detail-row"><span>Late Buffer (+3d)</span><span class="highlight-late">${new Date(end.getTime() + 259200000).toLocaleDateString()}</span></div>
                     </div>
                 `;
                 target.appendChild(block);
-                // Simple calendar population omitted for brevity, logic remains same as previous step
             }
         }
     </script>
