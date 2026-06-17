@@ -12,476 +12,68 @@
 
     <style>
         :root {
-            /* Theme Inspired by image_872423.png - Deep Cosmic Orchid & Dark Violet */
-            --bg-dark: #0b0a15;
             --bg-gradient: linear-gradient(180deg, #161426 0%, #0d0b1a 100%);
             --card-dark: #1b1730;
             --input-bg: #231e3d;
             --border-subtle: rgba(255, 255, 255, 0.05);
-            
-            /* Calendar Highlights from image_872423.png */
             --color-period: #e28da2;
             --bleed-gradient: linear-gradient(135deg, #da7a92 0%, #c45470 100%);
-            --color-ovulation: #1c2e5c;
-            --ovulation-base-hue: 282, 44%, 47%;
-            
+            --color-ovulation: #5c7aff; /* Brightened for highlight */
+            --color-text-highlight: #ffffff;
             --text-light: #f1f5f9;
             --text-muted: #8e8aa7;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+        /* Highlighting Classes */
+        .highlight-accent { background: var(--color-period); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        .highlight-fertility { background: var(--color-ovulation); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        .highlight-buffer { background: rgba(255, 255, 255, 0.1); color: var(--text-light); padding: 2px 6px; border-radius: 4px; }
 
-        body {
-            background: var(--bg-gradient);
-            color: var(--text-light);
-            padding: 30px 15px;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body { background: var(--bg-gradient); color: var(--text-light); padding: 30px 15px; display: flex; justify-content: center; min-height: 100vh; }
 
         .hidden { display: none !important; }
 
-        /* Welcome Screen Onboarding */
-        .welcome-screen {
-            width: 100%;
-            max-width: 580px;
-            margin: auto;
-            background: #151226;
-            padding: 45px 35px;
-            border-radius: 24px;
-            border: 1px solid var(--border-subtle);
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-        }
-
-        .welcome-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.8rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 30px;
-        }
-
-        .form-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-        .form-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; text-align: left; }
-
-        label {
-            margin-bottom: 8px;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            background: var(--input-bg);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 10px;
-            font-size: 0.95rem;
-            color: white;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: var(--color-period);
-        }
-
-        button.btn-prime {
-            background: linear-gradient(135deg, #e28da2 0%, #c45470 100%);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        /* Dashboard Interface Layout */
-        .dashboard-screen { width: 100%; max-width: 1200px; margin: 0 auto; }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-subtle);
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .premium-header-text { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 500; }
-        .user-meta { color: var(--text-muted); font-size: 0.8rem; margin-top: 4px; }
-
-        .btn-pdf {
-            background: transparent;
-            border: 1px solid var(--border-subtle);
-            color: var(--color-period);
-            padding: 10px 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* Dual Column Architecture Matrix (Responsive adjustments) */
-        .continuum-grid-container { display: flex; flex-direction: column; gap: 30px; }
-
-        .month-dual-workspace {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        /* Laptop View Adjustments */
-        @media (min-width: 900px) {
-            .month-dual-workspace {
-                grid-template-columns: 1.4fr 1fr; /* Split View: Calendar left, Insights Right */
-            }
-        }
-
-        .month-card-track {
-            background: var(--card-dark);
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .month-title-header {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            color: #ffffff;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Inside the Month Insight Panel (Right Box) */
-        .month-details-sidebar {
-            background: rgba(27, 23, 48, 0.6);
-            border: 1px dashed rgba(255, 255, 255, 0.08);
-            padding: 25px;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            font-size: 0.9rem;
-        }
-
-        .detail-row span:first-child { color: var(--text-muted); }
-        .detail-row span:last-child { font-weight: 600; color: #ffffff; }
-
-        /* Calendar Layout Architecture Grid */
-        .calendar-grid-core {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            row-gap: 12px;
-            text-align: center;
-        }
-
-        .weekday-label {
-            font-weight: 600;
-            color: var(--text-muted);
-            padding-bottom: 10px;
-            font-size: 0.75rem;
-        }
-
-        .day-node-wrapper { position: relative; padding: 4px 0; }
-        .day-node-element {
-            aspect-ratio: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.95rem;
-            position: relative;
-            z-index: 2;
-            border-radius: 50%;
-            width: 36px;
-            margin: 0 auto;
-        }
-
-        /* Calendar highlights adapted from image_872423.png values */
-        .day-node-wrapper.period-bleed-span .day-node-element {
-            background: var(--bleed-gradient);
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        .day-node-wrapper.ovulation-peak-anchor .day-node-element {
-            background: var(--color-ovulation);
-            color: #ffffff;
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(28, 46, 92, 0.6);
-        }
-
-        .day-node-wrapper.ovulation-wave-node .day-node-element {
-            background: rgba(28, 46, 92, var(--wave-alpha));
-        }
-
-        .day-micro-dot {
-            width: 4px;
-            height: 4px;
-            background-color: #ff4a74;
-            border-radius: 50%;
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* Generic Legend Box Styles */
-        .master-legend-card {
-            background: var(--card-dark);
-            padding: 20px;
-            border-radius: 20px;
-            border: 1px solid var(--border-subtle);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .legend-item { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--text-muted); }
-        .legend-swatch { width: 20px; height: 12px; border-radius: 3px; }
+        /* ... [Keep existing Welcome Screen and Dashboard CSS] ... */
+        .month-details-sidebar { background: rgba(27, 23, 48, 0.6); border: 1px dashed rgba(255, 255, 255, 0.08); padding: 25px; border-radius: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .detail-row { display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 0.9rem; }
+        
+        /* ... [Keep existing Calendar and Legend CSS] ... */
     </style>
 </head>
 <body>
 
-    <!-- Onboarding Panel Layout -->
-    <div id="welcome-screen" class="welcome-screen">
-        <div class="welcome-title">Welcome Ma'am</div>
-        
-        <form id="onboarding-form">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="user-name">First Name</label>
-                    <input type="text" id="user-name" placeholder="Sarah" required>
-                </div>
-                <div class="form-group">
-                    <label for="user-age">Age</label>
-                    <input type="number" id="user-age" min="10" max="100" placeholder="26" required>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="last-period">When did your last period begin?</label>
-                    <input type="date" id="last-period" required>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="cycle-days">Average Cycle Duration (Days)</label>
-                    <input type="number" id="cycle-days" min="22" max="45" value="28" required>
-                </div>
-                <div class="form-group">
-                    <label for="period-duration">Period Bleeding Duration (Days)</label>
-                    <input type="number" id="period-duration" min="2" max="10" value="5" required>
-                </div>
-            </div>
-            <button type="submit" class="btn-prime">Generate 3-Month View</button>
-        </form>
-    </div>
-
-    <!-- Active Workspace Viewport -->
-    <div id="dashboard-screen" class="dashboard-screen hidden">
-        <header>
-            <div>
-                <div class="premium-header-text">Workspace Continuum</div>
-                <div id="user-meta-info" class="user-meta">--</div>
-            </div>
-            <button id="download-pdf-btn" class="btn-pdf">Export PDF Report</button>
-        </header>
-
-        <div class="continuum-grid-container" id="pdf-content">
-            <!-- System Legend Layout Key -->
-            <div class="master-legend-card">
-                <div class="legend-item">
-                    <div class="legend-swatch" style="background: var(--bleed-gradient);"></div>
-                    <span>Period Window</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-swatch" style="background: var(--color-ovulation);"></div>
-                    <span>Ovulation Day Peak</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-swatch" style="background: rgba(28, 46, 92, 0.4);"></div>
-                    <span>Fertile Transition Range</span>
-                </div>
-            </div>
-
-            <!-- Target Insertion Location for JavaScript Generating Months -->
-            <div id="continuum-injection-target" class="continuum-grid-container"></div>
-        </div>
-    </div>
-
     <script>
-        let userData = {};
-
-        document.getElementById('onboarding-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            userData.name = document.getElementById('user-name').value;
-            userData.age = document.getElementById('user-age').value;
-            userData.lastPeriod = new Date(document.getElementById('last-period').value);
-            userData.cycleLength = parseInt(document.getElementById('cycle-days').value);
-            userData.periodDuration = parseInt(document.getElementById('period-duration').value);
-
-            document.getElementById('welcome-screen').classList.add('hidden');
-            document.getElementById('dashboard-screen').classList.remove('hidden');
-            
-            document.querySelector('.premium-header-text').innerText = `Hello, ${userData.name}`;
-            document.getElementById('user-meta-info').innerText = 
-                `Parameters: Age ${userData.age} | Duration Cycle: ${userData.cycleLength} Days | Bleed Metric: ${userData.periodDuration} Days`;
-
-            generateThreeMonthContinuum();
-        });
-
-        function generateThreeMonthContinuum() {
-            const targetContainer = document.getElementById('continuum-injection-target');
-            targetContainer.innerHTML = ''; 
-
-            let structuralAnchorDates = [];
-            
-            for (let m = 1; m <= 3; m++) {
-                let cycleStartAnchor = new Date(userData.lastPeriod);
-                cycleStartAnchor.setDate(userData.lastPeriod.getDate() + (userData.cycleLength * m));
-
-                let bleedEndAnchor = new Date(cycleStartAnchor);
-                bleedEndAnchor.setDate(cycleStartAnchor.getDate() + (userData.periodDuration - 1));
-
-                let ovulationPeakAnchor = new Date(cycleStartAnchor);
-                ovulationPeakAnchor.setDate(cycleStartAnchor.getDate() - 14);
-
-                structuralAnchorDates.push({
-                    sequenceIndex: m,
-                    periodStart: cycleStartAnchor,
-                    periodEnd: bleedEndAnchor,
-                    ovulationPeak: ovulationPeakAnchor,
-                    monthRepresentation: cycleStartAnchor.getMonth(),
-                    yearRepresentation: cycleStartAnchor.getFullYear()
-                });
-            }
-
-            structuralAnchorDates.forEach(matrixData => {
-                renderSplitViewWorkspace(targetContainer, matrixData);
-            });
-        }
+        // ... [Keep existing event listener] ...
 
         function renderSplitViewWorkspace(container, matrix) {
-            const monthLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            
-            // Core Flex Wrapper separating Calendar Side and Metadata Sidebar Side
-            const dualWorkspaceBlock = document.createElement('div');
-            dualWorkspaceBlock.className = 'month-dual-workspace';
-
-            // LEFT SIDE: Calendar Track Box
-            const cardTrack = document.createElement('div');
-            cardTrack.className = 'month-card-track';
-
-            const header = document.createElement('div');
-            header.className = 'month-title-header';
-            header.innerHTML = `<span>${monthLabels[matrix.monthRepresentation]} ${matrix.yearRepresentation}</span>`;
-            cardTrack.appendChild(header);
-
-            const gridCore = document.createElement('div');
-            gridCore.className = 'calendar-grid-core';
-
-            const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-            weekdays.forEach(wk => {
-                const label = document.createElement('div');
-                label.className = 'weekday-label';
-                label.innerText = wk;
-                gridCore.appendChild(label);
-            });
-
-            const firstDayIndex = new Date(matrix.yearRepresentation, matrix.monthRepresentation, 1).getDay();
-            const totalDaysInMonth = new Date(matrix.yearRepresentation, matrix.monthRepresentation + 1, 0).getDate();
-
-            for (let i = 0; i < firstDayIndex; i++) {
-                gridCore.appendChild(Object.assign(document.createElement('div'), { className: 'day-node-wrapper empty' }));
-            }
-
-            for (let day = 1; day <= totalDaysInMonth; day++) {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'day-node-wrapper';
-
-                const cell = document.createElement('div');
-                cell.className = 'day-node-element';
-                cell.innerText = day;
-                wrapper.appendChild(cell);
-
-                const currentEvalDate = new Date(matrix.yearRepresentation, matrix.monthRepresentation, day);
-
-                // Highlight Logic Check
-                if (currentEvalDate >= matrix.periodStart && currentEvalDate <= matrix.periodEnd) {
-                    wrapper.className = 'day-node-wrapper period-bleed-span';
-                    // Optional under-dot signature styling from image
-                    const smallDot = document.createElement('div');
-                    smallDot.className = 'day-micro-dot';
-                    wrapper.appendChild(smallDot);
-                }
-                else {
-                    let dayDifferenceFromPeak = Math.round((currentEvalDate - matrix.ovulationPeak) / (1000 * 60 * 60 * 24));
-                    if (dayDifferenceFromPeak === 0) {
-                        wrapper.className = 'day-node-wrapper ovulation-peak-anchor';
-                    } else if (Math.abs(dayDifferenceFromPeak) <= 3) {
-                        wrapper.className = 'day-node-wrapper ovulation-wave-node';
-                        let alphas = {1: '0.5', 2: '0.3', 3: '0.15'};
-                        wrapper.style.setProperty('--wave-alpha', alphas[Math.abs(dayDifferenceFromPeak)]);
-                    }
-                }
-
-                gridCore.appendChild(wrapper);
-            }
-            cardTrack.appendChild(gridCore);
-            dualWorkspaceBlock.appendChild(cardTrack);
+            // ... [Keep existing calendar rendering code] ...
 
             // RIGHT SIDE: Sidebar Metadata Detail Box
             const sidebar = document.createElement('div');
             sidebar.className = 'month-details-sidebar';
             
             const formatDateStr = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            
+            // Calculate +/- 3 day buffers
+            let earlyDate = new Date(matrix.periodStart); earlyDate.setDate(earlyDate.getDate() - 3);
+            let lateDate = new Date(matrix.periodStart); lateDate.setDate(lateDate.getDate() + 3);
 
             sidebar.innerHTML = `
                 <div style="font-family:'Playfair Display', serif; font-size:1.2rem; font-weight:600; margin-bottom:5px;">Cycle Breakdown</div>
-                <div class="detail-row"><span>Estimated Period Start</span><span>${formatDateStr(matrix.periodStart)}</span></div>
-                <div class="detail-row"><span>Estimated Period End</span><span>${formatDateStr(matrix.periodEnd)}</span></div>
-                <div class="detail-row"><span>Peak Fertility Window</span><span>${formatDateStr(matrix.ovulationPeak)}</span></div>
+                <div class="detail-row"><span>Early Cycle (-3 days)</span><span class="highlight-buffer">${formatDateStr(earlyDate)}</span></div>
+                <div class="detail-row"><span>Estimated Period Start</span><span class="highlight-accent">${formatDateStr(matrix.periodStart)}</span></div>
+                <div class="detail-row"><span>Peak Fertility Window</span><span class="highlight-fertility">${formatDateStr(matrix.ovulationPeak)}</span></div>
+                <div class="detail-row"><span>Late Cycle (+3 days)</span><span class="highlight-buffer">${formatDateStr(lateDate)}</span></div>
                 <div class="detail-row"><span>Phase Context</span><span>${matrix.sequenceIndex === 1 ? 'Immediate Forecast' : matrix.sequenceIndex === 2 ? 'Extended Horizon' : 'Quarter Horizon'}</span></div>
             `;
             
             dualWorkspaceBlock.appendChild(sidebar);
             container.appendChild(dualWorkspaceBlock);
         }
-
-        // Export Vector Handler Engine
-        document.getElementById('download-pdf-btn').addEventListener('click', function() {
-            const element = document.getElementById('pdf-content');
-            html2pdf().set({
-                margin: 10,
-                filename: `Atelier_3Month_Schedule.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, backgroundColor: '#0b0a15' },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            }).from(element).save();
-        });
+        
+        // ... [Keep existing PDF export code] ...
     </script>
 </body>
 </html>
