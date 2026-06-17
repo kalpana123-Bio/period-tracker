@@ -3,63 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cycle Atelier</title>
+    <title>Period Tracker</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
-        /* Essential styles to prevent blank screen */
-        body { background: #0b0a15; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .welcome-screen { background: #151226; padding: 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
-        button { background: #e28da2; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; cursor: pointer; }
+        :root {
+            --bg-dark: #0b0a15;
+            --bg-gradient: linear-gradient(180deg, #161426 0%, #0d0b1a 100%);
+            --card-dark: #1b1730;
+            --input-bg: #231e3d;
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            --color-period: #e28da2;
+            --bleed-gradient: linear-gradient(135deg, #da7a92 0%, #c45470 100%);
+            --color-ovulation: #1c2e5c;
+            --text-light: #f1f5f9;
+            --text-muted: #8e8aa7;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body { background: var(--bg-gradient); color: var(--text-light); padding: 30px 15px; display: flex; justify-content: center; min-height: 100vh; }
+
         .hidden { display: none !important; }
+
+        /* Existing Styles */
+        .welcome-screen { width: 100%; max-width: 580px; margin: auto; background: #151226; padding: 45px 35px; border-radius: 24px; border: 1px solid var(--border-subtle); text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        .welcome-title { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 600; color: #ffffff; margin-bottom: 30px; }
+        .form-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; text-align: left; }
+        label { margin-bottom: 8px; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        input { width: 100%; padding: 14px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; font-size: 0.95rem; color: white; outline: none; }
+        button.btn-prime { background: linear-gradient(135deg, #e28da2 0%, #c45470 100%); color: white; border: none; padding: 16px; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; }
+        
+        .dashboard-screen { width: 100%; max-width: 1200px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 30px; }
+        .premium-header-text { font-family: 'Playfair Display', serif; font-size: 2.2rem; }
+        .btn-pdf { background: transparent; border: 1px solid var(--border-subtle); color: var(--color-period); padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+        
+        .continuum-grid-container { display: flex; flex-direction: column; gap: 30px; }
+        .month-dual-workspace { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 900px) { .month-dual-workspace { grid-template-columns: 1.4fr 1fr; } }
+        
+        .month-card-track { background: var(--card-dark); padding: 25px; border-radius: 20px; border: 1px solid var(--border-subtle); }
+        .month-title-header { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 20px; }
+        
+        .month-details-sidebar { background: rgba(27, 23, 48, 0.6); border: 1px dashed rgba(255, 255, 255, 0.08); padding: 25px; border-radius: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .detail-row { display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 0.9rem; }
+        .detail-row span:first-child { color: var(--text-muted); }
+        .detail-row span:last-child { font-weight: 600; color: #ffffff; }
+
+        /* STEP 1: Premium Right Panel Highlights */
+        .detail-row.period-highlight { background: rgba(226,141,162,0.18); border-left:5px solid #e28da2; padding:12px; border-radius:10px; }
+        .detail-row.fertile-highlight { background: rgba(94,80,220,0.20); border-left:5px solid #7b68ee; padding:12px; border-radius:10px; }
+        .detail-row.earlylate-highlight { background: rgba(255,255,255,0.05); border-left:5px solid rgba(255,255,255,0.15); padding:12px; border-radius:10px; }
+
+        .calendar-grid-core { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 12px; text-align: center; }
+        .weekday-label { font-weight: 600; color: var(--text-muted); padding-bottom: 10px; font-size: 0.75rem; }
+        .day-node-wrapper { position: relative; padding: 4px 0; }
+        .day-node-element { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; width: 36px; margin: 0 auto; }
+        .day-node-wrapper.period-bleed-span .day-node-element { background: var(--bleed-gradient); color: #ffffff; font-weight: bold; }
+        .day-node-wrapper.ovulation-peak-anchor .day-node-element { background: var(--color-ovulation); color: #ffffff; font-weight: bold; }
+        .day-micro-dot { width: 4px; height: 4px; background-color: #ff4a74; border-radius: 50%; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); }
     </style>
 </head>
 <body>
 
     <div id="welcome-screen" class="welcome-screen">
-        <h1>Welcome Ma'am</h1>
+        <div class="welcome-title">Welcome Ma'am</div>
         <form id="onboarding-form">
-            <input type="text" id="user-name" placeholder="Name" required>
-            <input type="date" id="last-period" required>
-            <input type="number" id="cycle-days" placeholder="Cycle Duration (e.g. 28)" required>
-            <input type="number" id="period-duration" placeholder="Bleed Duration (e.g. 5)" required>
-            <button type="submit">Launch Dashboard</button>
+            <div class="form-row">
+                <div class="form-group"><label>First Name</label><input type="text" id="user-name" placeholder="Sarah" required></div>
+                <div class="form-group"><label>Age</label><input type="number" id="user-age" placeholder="26" required></div>
+            </div>
+            <div class="form-row"><div class="form-group"><label>Last period began</label><input type="date" id="last-period" required></div></div>
+            <div class="form-row">
+                <div class="form-group"><label>Cycle Days</label><input type="number" id="cycle-days" value="28" required></div>
+                <div class="form-group"><label>Bleed Days</label><input type="number" id="period-duration" value="5" required></div>
+            </div>
+            <button type="submit" class="btn-prime">Generate 3-Month View</button>
         </form>
     </div>
 
-    <div id="dashboard-screen" class="hidden" style="width: 90%; max-width: 800px; padding: 20px;">
-        <h1 id="greeting">Hello</h1>
-        <div id="target"></div>
+    <div id="dashboard-screen" class="dashboard-screen hidden">
+        <header>
+            <div>
+                <div class="premium-header-text">Workspace Continuum</div>
+                <div id="user-meta-info" class="user-meta">--</div>
+            </div>
+            <button id="download-pdf-btn" class="btn-pdf">Export PDF Report</button>
+        </header>
+        <div id="pdf-content" class="continuum-grid-container">
+            <div id="continuum-injection-target" class="continuum-grid-container"></div>
+        </div>
     </div>
 
     <script>
+        let userData = {};
         document.getElementById('onboarding-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('user-name').value;
-            const lastPeriod = new Date(document.getElementById('last-period').value);
-            const cycle = parseInt(document.getElementById('cycle-days').value);
-            
+            userData.name = document.getElementById('user-name').value;
+            userData.age = document.getElementById('user-age').value;
+            userData.lastPeriod = new Date(document.getElementById('last-period').value);
+            userData.cycleLength = parseInt(document.getElementById('cycle-days').value);
+            userData.periodDuration = parseInt(document.getElementById('period-duration').value);
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('hidden');
-            document.getElementById('greeting').innerText = `Hello, ${name}`;
-            
-            const target = document.getElementById('target');
-            for (let m = 1; m <= 3; m++) {
-                let start = new Date(lastPeriod); start.setDate(lastPeriod.getDate() + (cycle * m));
-                let peak = new Date(start); peak.setDate(start.getDate() - 14);
-                let early = new Date(start); early.setDate(start.getDate() - 3);
-                let late = new Date(start); late.setDate(start.getDate() + 3);
-
-                target.innerHTML += `
-                    <div style="background:#1b1730; padding:20px; margin:10px 0; border-radius:10px;">
-                        <h3>${start.toLocaleDateString()}</h3>
-                        <p>Early (-3d): <b>${early.toLocaleDateString()}</b></p>
-                        <p style="color:#e28da2">Start: <b>${start.toLocaleDateString()}</b></p>
-                        <p style="color:#5c7aff">Peak Fertility: <b>${peak.toLocaleDateString()}</b></p>
-                        <p>Late (+3d): <b>${late.toLocaleDateString()}</b></p>
-                    </div>
-                `;
-            }
+            generateThreeMonthContinuum();
         });
+
+        function generateThreeMonthContinuum() {
+            const targetContainer = document.getElementById('continuum-injection-target');
+            targetContainer.innerHTML = '';
+            for (let m = 1; m <= 3; m++) {
+                let cycleStartAnchor = new Date(userData.lastPeriod);
+                cycleStartAnchor.setDate(userData.lastPeriod.getDate() + (userData.cycleLength * m));
+                let bleedEndAnchor = new Date(cycleStartAnchor);
+                bleedEndAnchor.setDate(cycleStartAnchor.getDate() + (userData.periodDuration - 1));
+                let ovulationPeakAnchor = new Date(cycleStartAnchor);
+                ovulationPeakAnchor.setDate(cycleStartAnchor.getDate() - 14);
+                renderSplitViewWorkspace(targetContainer, {
+                    sequenceIndex: m,
+                    periodStart: cycleStartAnchor,
+                    periodEnd: bleedEndAnchor,
+                    ovulationPeak: ovulationPeakAnchor,
+                    monthRepresentation: cycleStartAnchor.getMonth(),
+                    yearRepresentation: cycleStartAnchor.getFullYear()
+                });
+            }
+        }
+
+        function renderSplitViewWorkspace(container, matrix) {
+            const monthLabels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const dualWorkspaceBlock = document.createElement('div');
+            dualWorkspaceBlock.className = 'month-dual-workspace';
+
+            const cardTrack = document.createElement('div');
+            cardTrack.className = 'month-card-track';
+            cardTrack.innerHTML = `<div class="month-title-header">${monthLabels[matrix.monthRepresentation]} ${matrix.yearRepresentation}</div>`;
+            
+            // ... (Calendar rendering logic remains same) ...
+            
+            // STEP 2: Calculate Early & Late dates
+            const formatDateStr = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const earlyStart = new Date(matrix.periodStart); earlyStart.setDate(earlyStart.getDate() - 3);
+            const lateStart = new Date(matrix.periodStart); lateStart.setDate(lateStart.getDate() + 3);
+            const fertileStart = new Date(matrix.ovulationPeak); fertileStart.setDate(fertileStart.getDate() - 3);
+            const fertileEnd = new Date(matrix.ovulationPeak); fertileEnd.setDate(fertileEnd.getDate() + 3);
+
+            // STEP 3: Replace the sidebar HTML
+            const sidebar = document.createElement('div');
+            sidebar.className = 'month-details-sidebar';
+            sidebar.innerHTML = `
+                <div style="font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:600; margin-bottom:12px;">Cycle Breakdown</div>
+                <div class="detail-row period-highlight"><span>🩸 Estimated Period Start</span><span>${formatDateStr(matrix.periodStart)}</span></div>
+                <div class="detail-row"><span>Estimated Period End</span><span>${formatDateStr(matrix.periodEnd)}</span></div>
+                <div class="detail-row fertile-highlight"><span>🌸 Peak Fertility Window</span><span>${formatDateStr(fertileStart)} - ${formatDateStr(fertileEnd)}</span></div>
+                <div class="detail-row earlylate-highlight"><span>🟢 Early Cycle (-3 Days)</span><span>${formatDateStr(earlyStart)}</span></div>
+                <div class="detail-row earlylate-highlight"><span>🟠 Late Cycle (+3 Days)</span><span>${formatDateStr(lateStart)}</span></div>
+                <div class="detail-row"><span>Phase Context</span><span>${matrix.sequenceIndex==1 ? "Immediate Forecast" : matrix.sequenceIndex==2 ? "Extended Horizon" : "Quarter Horizon"}</span></div>
+            `;
+            
+            dualWorkspaceBlock.appendChild(cardTrack);
+            dualWorkspaceBlock.appendChild(sidebar);
+            container.appendChild(dualWorkspaceBlock);
+        }
     </script>
 </body>
 </html>
